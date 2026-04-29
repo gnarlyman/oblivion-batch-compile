@@ -1,11 +1,8 @@
 // obse_main.cpp — OBSE plugin entry point and CS-window-ready dispatch.
 
-// Order matters: common/IPrefix.h defines UInt32/UInt8/etc that PluginAPI.h
-// uses unqualified. Include it first.
-#include "common/IPrefix.h"
+#include <Windows.h>
 
-#include "obse/PluginAPI.h"
-#include "obse_common/obse_version.h"
+#include "obse_minimal.h"
 
 #include "batch.h"
 #include "config.h"

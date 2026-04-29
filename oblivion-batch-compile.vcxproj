@@ -44,8 +44,8 @@
     <IntDir>$(SolutionDir)Build\Intermediate\$(Configuration)\</IntDir>
     <TargetName>oblivion-batch-compile</TargetName>
     <TargetExt>.dll</TargetExt>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)src;$(XSECommonIncludePath);$(SMESundriesIncludePath);$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)src;$(XSECommonIncludePath);$(SMESundriesIncludePath);$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)src;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,6 +105,7 @@
     <ClInclude Include="src\result.h" />
     <ClInclude Include="src\sha256.h" />
     <ClInclude Include="src\log.h" />
+    <ClInclude Include="src\obse_minimal.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\obse_main.cpp" />

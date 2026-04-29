@@ -26,11 +26,9 @@ The intended workflow is:
 
 ## Build
 
-Requires Visual Studio 2022 (v143 toolset, Win32). No DirectX SDK,
-no CrashRpt, no managed/CLI components. Header-only deps:
-
-- [shadeMe/OBSE-Plugin-Build-Dependencies](https://github.com/shadeMe/OBSE-Plugin-Build-Dependencies)
-- [shadeMe/SME-Sundries](https://github.com/shadeMe/SME-Sundries)
+Requires Visual Studio 2022 (v143 toolset, Win32). No external clones —
+the OBSE plugin ABI is vendored in `src/obse_minimal.h`. No DirectX SDK,
+no CrashRpt, no managed/CLI components.
 
 Setup:
 
