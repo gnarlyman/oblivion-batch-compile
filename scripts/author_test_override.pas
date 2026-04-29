@@ -122,7 +122,18 @@ begin
   end;
 
   OldSCTX := GetEditValue(SCTXElem);
-  NewSCTX := '; OBC test author at ' + DateTimeToStr(Now) + #13#10 + OldSCTX;
+  // Apply the real PSMQD DLC-guard fix: extend the IsModLoaded check so
+  // Reborn's "Delay DLC Start.esp" satisfies it too. This is a genuine
+  // semantic change, so the recompiled SCDA must differ from the master's.
+  NewSCTX := StringReplace(OldSCTX,
+    'IsModLoaded "Oblivion DLC Delayers.esp" == 1',
+    'IsModLoaded "Oblivion DLC Delayers.esp" == 1 || IsModLoaded "Delay DLC Start.esp" == 1',
+    [rfReplaceAll]);
+
+  if NewSCTX = OldSCTX then begin
+    AddMessage('WARNING: pattern not found in SCTX — no change applied');
+  end;
+
   SetEditValue(SCTXElem, NewSCTX);
 
   AddMessage('Override authored. Old SCTX length: ' + IntToStr(Length(OldSCTX)) +
