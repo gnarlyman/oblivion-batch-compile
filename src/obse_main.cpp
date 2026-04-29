@@ -64,6 +64,11 @@ DWORD WINAPI WaitAndKickoffThread(LPVOID) {
     g_origWndProc = orig;
     OBC_LOG("Worker: WndProc subclassed (orig=%p)", reinterpret_cast<void*>(orig));
 
+    if (g_config.hideWindow) {
+        OBC_LOG("Worker: hiding CS main window (CSE_BATCH_HIDDEN=1)");
+        ShowWindow(hwnd, SW_HIDE);
+    }
+
     PostMessageA(hwnd, kBatchKickoffMessage, 0, 0);
     OBC_LOG("Worker: kickoff posted; exiting worker thread");
     return 0;

@@ -1,13 +1,25 @@
 {
   author_test_override.pas
 
-  Authors a SCPT-as-override into a target plugin and tweaks SCTX so the
-  bytecode (SCDA) becomes stale relative to the source. Used as a setup
-  step before exercising the oblivion-batch-compile plugin.
+  Authors a SCPT-as-override into a target plugin and applies a
+  StringReplace transformation to its SCTX so the bytecode (SCDA)
+  becomes stale relative to the source. Used as a setup step before
+  exercising the oblivion-batch-compile plugin.
 
   Args:
     --target-plugin=<filename>   required
     --master-formid=<hex>        required (e.g. 1A012EAF)
+    --sctx-find=<text>           optional. Substring to search for.
+    --sctx-replace=<text>        optional. Replacement substring.
+
+  If --sctx-find is omitted, the script defaults to the PSMQD
+  DLC-guard fix (extends IsModLoaded "Oblivion DLC Delayers.esp" to
+  also accept "Delay DLC Start.esp"). If you supply --sctx-find but
+  not --sctx-replace, the find is replaced with empty (deletion).
+
+  Both find and replace strings may contain spaces — pass each as a
+  single-quoted argument so MO2's args.join doesn't split them, e.g.
+  --sctx-find='IsModLoaded "Foo.esp"'.
 
   IMPORTANT: do not place curly braces inside this block comment.
 }
@@ -73,6 +85,7 @@ function Initialize: integer;
 var
   TargetPlugin, MasterRec, Override, SCTXElem: IInterface;
   TargetName, FormIDStr, MasterPluginName, OldSCTX, NewSCTX: string;
+  SctxFind, SctxReplace: string;
   MasterFid: cardinal;
 begin
   TargetName := GetArg('target-plugin');
@@ -122,16 +135,23 @@ begin
   end;
 
   OldSCTX := GetEditValue(SCTXElem);
-  // Apply the real PSMQD DLC-guard fix: extend the IsModLoaded check so
-  // Reborn's "Delay DLC Start.esp" satisfies it too. This is a genuine
-  // semantic change, so the recompiled SCDA must differ from the master's.
-  NewSCTX := StringReplace(OldSCTX,
-    'IsModLoaded "Oblivion DLC Delayers.esp" == 1',
-    'IsModLoaded "Oblivion DLC Delayers.esp" == 1 || IsModLoaded "Delay DLC Start.esp" == 1',
-    [rfReplaceAll]);
+
+  SctxFind := GetArg('sctx-find');
+  SctxReplace := GetArg('sctx-replace');
+  if SctxFind = '' then begin
+    // Default: the PSMQD DLC-guard fix (extend IsModLoaded check).
+    SctxFind := 'IsModLoaded "Oblivion DLC Delayers.esp" == 1';
+    SctxReplace := 'IsModLoaded "Oblivion DLC Delayers.esp" == 1 || IsModLoaded "Delay DLC Start.esp" == 1';
+    AddMessage('No --sctx-find given; using built-in PSMQD DLC-guard fix');
+  end;
+
+  AddMessage('SCTX find:    ' + SctxFind);
+  AddMessage('SCTX replace: ' + SctxReplace);
+
+  NewSCTX := StringReplace(OldSCTX, SctxFind, SctxReplace, [rfReplaceAll]);
 
   if NewSCTX = OldSCTX then begin
-    AddMessage('WARNING: pattern not found in SCTX — no change applied');
+    AddMessage('WARNING: --sctx-find pattern not found in SCTX — no change applied');
   end;
 
   SetEditValue(SCTXElem, NewSCTX);

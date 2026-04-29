@@ -61,11 +61,16 @@ bool BatchConfig::LoadFromEnvironment() {
         resultPath = std::move(s);
     }
 
+    if (GetEnv("CSE_BATCH_HIDDEN", s)) {
+        hideWindow = (s != "0" && s != "false" && s != "FALSE");
+    }
+
     enabled = true;
-    OBC_LOG("Config: enabled, target=\"%s\", formid=%s%08X, result=\"%s\"",
+    OBC_LOG("Config: enabled, target=\"%s\", formid=%s%08X, result=\"%s\", hidden=%d",
             targetPlugin.c_str(),
             hasFormId ? "" : "(any) 0x", formId,
-            resultPath.c_str());
+            resultPath.c_str(),
+            hideWindow ? 1 : 0);
     return true;
 }
 

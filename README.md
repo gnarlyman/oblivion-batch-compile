@@ -1,125 +1,171 @@
 # oblivion-batch-compile
 
-A headless OBSE editor plugin that recompiles Oblivion SCPT bytecode
+Headless OBSE editor plugin that recompiles Oblivion SCPT bytecode
 (`SCDA` subrecords) from script source (`SCTX`) without UI interaction.
 
 ## Why
 
 Authoring script overrides for Oblivion mods normally requires opening
-TESConstructionSet (or CSE) in its GUI, double-clicking each script in
-the editor pane, and saving. xEdit cannot recompile SCDA — it only edits
-the source text.
+the Construction Set GUI, double-clicking each script in the editor pane,
+and saving. xEdit can edit `SCTX` (source) but cannot recompile `SCDA`
+(bytecode) — and the engine runs the bytecode, so xEdit-only overrides
+are runtime-inert.
 
-This plugin loads inside the CS process (via OBSE editor mode), reads
-target plugin and optional FormID filter from environment variables,
-calls the CS-internal script compiler at offset `0x00503450`, saves the
-plugin, and exits the CS — with zero clicks.
+This plugin loads inside the CS process via OBSE editor mode, reads
+target plugin + optional FormID from environment variables, drives the
+CS through the load → recompile → save → close cycle, and exits. With
+[Construction Set Extender][cse] enabled, it uses CSE's preprocessor for
+macro/long-line handling; without CSE, it falls back to a port of CSE's
+compiler-error detours (handles simpler scripts only).
 
-The intended workflow is:
+## Workflow
 
-1. **xEdit (or any tool) authors an SCTX-only override** in the target
-   `.esp` — copying the master SCPT as override into the active file
-   and editing the `SCTX` text. The resulting record has fresh source
-   and stale (master-inherited) bytecode.
-2. **This plugin runs**, finds the override, recompiles `SCDA` from
-   `SCTX`, saves the plugin.
+```
+xEdit Pascal authoring (headless) → SCTX-only override in target .esp
+                                  ↓
+              oblivion-batch-compile (env-var driven)
+                                  ↓
+        loads .esp → CSE preprocessor → CS compiler → save → exit
+                                  ↓
+                     status JSON with sha256-before/after
+```
+
+End-to-end: ~5–15 seconds, zero clicks.
 
 ## Build
 
-Requires Visual Studio 2022 (v143 toolset, Win32). No external clones —
-the OBSE plugin ABI is vendored in `src/obse_minimal.h`. No DirectX SDK,
-no CrashRpt, no managed/CLI components.
+Visual Studio 2022 (v143 toolset, Win32). No DirectX SDK, no CrashRpt,
+no managed/CLI components.
 
-Setup:
+Header-only deps:
+- [shadeMe/SME-Sundries][sme] — only used by `compiler_patches.cpp`
+  (the no-CSE fallback path); MemoryHandler.h supplies the hook macros.
 
 ```bash
 cp EnvVars.props.template EnvVars.props
-# Edit EnvVars.props to point at your local clones and Oblivion install.
+# Edit OblivionPath / MO2DeployPath / SMESundriesIncludePath.
 
-"C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe" \
-  oblivion-batch-compile.sln /p:Configuration=Release /p:Platform=Win32
+MSBuild oblivion-batch-compile.sln /p:Configuration=Release /p:Platform=Win32
 ```
 
-The post-build step copies `oblivion-batch-compile.dll` to
-`$(OblivionPath)\Data\obse\plugins\` if `$(OblivionPath)` is set.
+Post-build copies the DLL to `$(MO2DeployPath)` if set.
 
 ## Install (MO2)
 
-1. Place the built DLL at `<MO2 instance>/mods/CSE Batch Compile/OBSE/Plugins/oblivion-batch-compile.dll`.
-2. Activate the "CSE Batch Compile" mod in your profile.
-3. Add an MO2 custom executable (Tools → Modify Executables → Add):
-   - Title: `CSE Batch Compile`
-   - Binary: `<oblivion>/obse_loader.exe`
-   - Arguments: `-editor`
-   - Working directory: `<oblivion>` (the Oblivion install root)
+1. **DLL location:** place at
+   `<MO2 instance>/mods/CSE Batch Compile/OBSE/Plugins/oblivion-batch-compile.dll`.
+   **Case matters** — USVFS overlays match path segments case-sensitively
+   on Windows. `obse/plugins/` will not be visible to OBSE; use exactly
+   `OBSE/Plugins/`.
+2. **Activate** the "CSE Batch Compile" mod in your profile and check the
+   plugin entry in `loadorder.txt`.
+3. **MO2 custom-exec entry** (`ModOrganizer.ini` `[customExecutables]`):
+   ```
+   <n>\title=CSE Batch Compile
+   <n>\binary=<oblivion>/Stock Game/obse_loader.exe
+   <n>\arguments=-editor -notimeout
+   <n>\workingDirectory=<oblivion>/Stock Game
+   ```
+   **Critical:** point `binary` at the *staged* `Stock Game/obse_loader.exe`,
+   **not** the mod-folder original (`mods/.../Root/obse_loader.exe`). MO2's
+   `adjustForVirtualized` rewrites mod-folder binary paths to
+   `<gameDataDir>/<rest>` — but Root Builder content lives at the game
+   *root*, not under `Data/`, so the rewritten path doesn't exist and the
+   launch silently no-ops.
+4. **CSE + admin requirement.** Construction Set Extender requires admin
+   privileges to initialize (CrashRpt). Without it our plugin still loads,
+   but only the no-CSE fallback compile path is available — sufficient
+   only for simple scripts. For the full CSE preprocessor pipeline, run
+   MO2 with "Run as administrator" enabled.
+5. **UAC/launching.** When MO2 is set to run as admin, you can't launch
+   it via `moshortcut://` from a non-admin shell (Windows refuses to
+   bridge the IL boundary). Either run from a privileged shell, or use a
+   Task Scheduler task with saved credentials to invoke MO2.
 
 ## Usage
 
-Set environment variables, then launch via MO2:
-
 ```bash
-export CSE_BATCH_ONE="Reborn Conflicts.esp"        # required: target plugin filename
-export CSE_BATCH_FORMID="01012EAF"                  # optional: only recompile this SCPT (active-file FormID, hex)
-export CSE_BATCH_RESULT="D:/tmp/cse-result.json"   # optional: write status JSON here
+export CSE_BATCH_ONE="Reborn Conflicts.esp"     # required: target .esp
+export CSE_BATCH_FORMID="01012EAF"               # optional: only this SCPT
+export CSE_BATCH_RESULT="D:/tmp/cse-result.json" # optional: status JSON path
+export CSE_BATCH_HIDDEN=1                        # optional: hide CS window
 
 "<MO2 instance>/ModOrganizer.exe" "moshortcut://:CSE Batch Compile"
 ```
 
-Result JSON shape:
+Or use the bundled wrapper that polls for the result:
+
+```bash
+./examples/run-batch-compile.sh --plugin "Reborn Conflicts.esp" --formid 01012EAF
+```
+
+The leading-`:` form uses the current MO2 instance; the field before `:`
+is an MO2 *instance* name, not a profile.
+
+### Result JSON
 
 ```json
 {
   "status": "ok",
   "plugin": "Reborn Conflicts.esp",
+  "saved": true,
   "scripts": [
     {
       "editor_id": "PSCharactergenStartingEquipmentScript",
       "form_id": "01012EAF",
-      "scda_sha256_before": "...",
-      "scda_sha256_after": "...",
-      "result": "ok"
+      "compile_ok": true,
+      "scda_length_before": 19470,
+      "scda_length_after": 19507,
+      "scda_sha256_before": "dcaa12744b1aed95...",
+      "scda_sha256_after":  "5d1b08488a91804f..."
     }
   ]
 }
 ```
 
-### Multi-plugin batch (job mode)
+If `compile_ok` is true and the sha256 hashes differ, the override
+is runtime-effective: the engine will execute the new bytecode.
 
-```bash
-export CSE_BATCH_JOB="D:/tmp/jobs.json"
-"<MO2 instance>/ModOrganizer.exe" "moshortcut://:CSE Batch Compile"
+### Authoring helper
+
+`scripts/author_test_override.pas` is a companion xEdit Pascal script
+that copies a master SCPT as override into a target plugin and applies
+a `StringReplace` to its SCTX. Default behavior is the PSMQD DLC-guard
+fix; pass `--sctx-find` and `--sctx-replace` for arbitrary edits:
+
 ```
-
-Where `jobs.json` is:
-
-```json
-{
-  "jobs": [
-    { "plugin": "Reborn Conflicts.esp", "form_id": "01012EAF" },
-    { "plugin": "Other Patch.esp" }
-  ]
-}
+TES4Edit_patched -script:scripts/author_test_override.pas \
+  --target-plugin="Reborn Conflicts.esp" \
+  --master-formid=1A012EAF \
+  --sctx-find='IsModLoaded "Foo.esp"' \
+  --sctx-replace='IsModLoaded "Bar.esp"'
 ```
-
-Each job runs sequentially; the CS launches once and processes all jobs
-before exiting.
 
 ## Caveats
 
-- The CS main window appears briefly. The plugin issues `WM_CLOSE` when
-  done; total runtime is typically 5–15 seconds.
-- Only records marked `kFormFlags_FromActiveFile` (i.e., overrides
-  authored in the target plugin, not its masters) are eligible for
-  recompile. The xEdit-side authoring step is mandatory.
-- TESConstructionSet **v1.2** only. Hardcoded offsets are exe-version
+- **TESConstructionSet v1.2 only.** Hardcoded offsets are exe-version
   specific.
+- **Active-file records only.** The plugin recompiles records flagged
+  `kFormFlags_FromActiveFile` — i.e., authored in the target plugin
+  (not master records). The xEdit-side authoring step is mandatory.
+- **First-run popups.** The CS shows reference-resolution warnings on
+  first plugin load. Click "Yes to all" once; it's sticky for the
+  session. (Future: add a watcher thread that auto-dismisses.)
+- **CSE conflicts.** Don't apply our compiler-error patches when CSE
+  is loaded — CSE's own patches are at the same byte addresses, and
+  double-patching crashed CSE. The plugin auto-detects CSE and skips
+  its own patches accordingly.
 
 ## Attribution
 
-The CS-internal address table and Script/TESDataHandler struct layouts
-are derived from [shadeMe/Construction-Set-Extender](https://github.com/shadeMe/Construction-Set-Extender)
-(GPL-3.0). This project is licensed GPL-3.0 accordingly.
+CS-internal address table, struct layouts, the compiler-error-detour
+port, and the recompile pipeline pattern are derived from
+[shadeMe/Construction-Set-Extender][cse] (GPL-3.0). This project is
+GPL-3.0 accordingly.
 
 ## License
 
 GPL-3.0. See `LICENSE`.
+
+[cse]: https://github.com/shadeMe/Construction-Set-Extender
+[sme]: https://github.com/shadeMe/SME-Sundries
