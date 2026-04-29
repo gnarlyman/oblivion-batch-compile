@@ -45,7 +45,7 @@ The post-build step copies `oblivion-batch-compile.dll` to
 
 ## Install (MO2)
 
-1. Place the built DLL at `<MO2 instance>/mods/CSE Batch Compile/obse/plugins/oblivion-batch-compile.dll`.
+1. Place the built DLL at `<MO2 instance>/mods/CSE Batch Compile/OBSE/Plugins/oblivion-batch-compile.dll`.
 2. Activate the "CSE Batch Compile" mod in your profile.
 3. Add an MO2 custom executable (Tools → Modify Executables → Add):
    - Title: `CSE Batch Compile`
@@ -62,7 +62,7 @@ export CSE_BATCH_ONE="Reborn Conflicts.esp"        # required: target plugin fil
 export CSE_BATCH_FORMID="01012EAF"                  # optional: only recompile this SCPT (active-file FormID, hex)
 export CSE_BATCH_RESULT="D:/tmp/cse-result.json"   # optional: write status JSON here
 
-"<MO2 instance>/ModOrganizer.exe" "moshortcut://<profile>:CSE Batch Compile"
+"<MO2 instance>/ModOrganizer.exe" "moshortcut://:CSE Batch Compile"
 ```
 
 Result JSON shape:
@@ -87,7 +87,7 @@ Result JSON shape:
 
 ```bash
 export CSE_BATCH_JOB="D:/tmp/jobs.json"
-"<MO2 instance>/ModOrganizer.exe" "moshortcut://<profile>:CSE Batch Compile"
+"<MO2 instance>/ModOrganizer.exe" "moshortcut://:CSE Batch Compile"
 ```
 
 Where `jobs.json` is:

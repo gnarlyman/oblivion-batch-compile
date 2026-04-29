@@ -20,14 +20,15 @@ using SInt32 = std::int32_t;
 using PluginHandle = UInt32;
 constexpr PluginHandle kPluginHandle_Invalid = 0xFFFFFFFFu;
 
-// Interface IDs (PluginAPI.h: enum { kInterface_Messaging, … }).
-constexpr UInt32 kInterface_Serialization = 0;
-constexpr UInt32 kInterface_Console       = 1;
-constexpr UInt32 kInterface_Messaging     = 2;
-constexpr UInt32 kInterface_CommandTable  = 3;
-constexpr UInt32 kInterface_StringVar     = 4;
+// Interface IDs. Order matches xOBSE obse/PluginAPI.h `enum { kInterface_Console, … }`.
+constexpr UInt32 kInterface_Console       = 0;
+constexpr UInt32 kInterface_Serialization = 1;
+constexpr UInt32 kInterface_StringVar     = 2;
+constexpr UInt32 kInterface_IO            = 3;
+constexpr UInt32 kInterface_Messaging     = 4;
 constexpr UInt32 kInterface_ArrayVar      = 5;
-constexpr UInt32 kInterface_Script        = 6;
+constexpr UInt32 kInterface_CommandTable  = 6;
+constexpr UInt32 kInterface_Script        = 7;
 
 struct PluginInfo {
     enum { kInfoVersion = 2 };
@@ -36,42 +37,41 @@ struct PluginInfo {
     UInt32      version;
 };
 
+// Layout matches xOBSE obse/PluginAPI.h::OBSEInterface. We don't actually call
+// the command-table or directory functions, but the struct slots in front of
+// QueryInterface MUST exist so the offset to QueryInterface is correct.
 struct OBSEInterface {
     UInt32 obseVersion;
     UInt32 oblivionVersion;
     UInt32 editorVersion;
     UInt32 isEditor;
-
-    void*       (*QueryInterface)(UInt32 id);
+    bool   (*RegisterCommand)(void* info);       // CommandInfo*; opaque to us
+    void   (*SetOpcodeBase)(UInt32 opcode);
+    void*  (*QueryInterface)(UInt32 id);
     PluginHandle (*GetPluginHandle)(void);
-
-    // Older PluginAPI.h has additional members past this point (release index,
-    // GetReleaseIndex, GetSingleton, etc.). We don't call them; struct size
-    // doesn't matter to us because the host (obse) constructed it and passes a
-    // pointer — we only read fields up to QueryInterface/GetPluginHandle.
+    bool   (*RegisterTypedCommand)(void* info, int retnType);
+    const char* (*GetOblivionDirectory)();
+    bool   (*GetPluginLoaded)(const char* pluginName);
+    UInt32 (*GetPluginVersion)(const char* pluginName);
 };
 
 struct OBSEMessagingInterface {
     UInt32 version;
 
+    // Order matches xOBSE obse/PluginAPI.h. PostPostLoad was added after the
+    // earlier ExitGame / SaveGame / Precompile / PreLoadGame messages.
     enum {
         kMessage_PostLoad           = 0,
-        kMessage_PostPostLoad       = 1,
-        kMessage_ExitGame           = 2,
-        kMessage_ExitToMainMenu     = 3,
-        kMessage_LoadGame           = 4,
-        kMessage_SaveGame           = 5,
-        kMessage_Precompile         = 6,
-        kMessage_PreLoadGame        = 7,
-        kMessage_ExitGame_Console   = 8,
-        kMessage_DeleteGame         = 9,
-        kMessage_InputLoop          = 10,
-        kMessage_RuntimeScriptError = 11,
-        kMessage_DeletePermanentRefr= 12,
-        kMessage_GameLoaded         = 13,
-        kMessage_ScriptCompile      = 14,
-        kMessage_EventListDestroyed = 15,
-        kMessage_PostQueryPlugins   = 16,
+        kMessage_ExitGame           = 1,
+        kMessage_ExitToMainMenu     = 2,
+        kMessage_LoadGame           = 3,
+        kMessage_SaveGame           = 4,
+        kMessage_Precompile         = 5,  // EDITOR: script editor save trigger
+        kMessage_PreLoadGame        = 6,
+        kMessage_ExitGame_Console   = 7,
+        kMessage_PostLoadGame       = 8,
+        kMessage_PostPostLoad       = 9,
+        kMessage_RuntimeScriptError = 10,
     };
 
     struct Message {

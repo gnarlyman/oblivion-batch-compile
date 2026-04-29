@@ -13,7 +13,7 @@
     <!-- Where the post-build step copies the DLL. Typically a path inside an
          MO2 mod folder so USVFS overlays it when you launch through MO2.
          Leave empty to skip post-build deployment. -->
-    <MO2DeployPath>D:\Modlists\Reborn\mods\CSE Batch Compile\obse\plugins</MO2DeployPath>
+    <MO2DeployPath>D:\Modlists\Reborn\mods\CSE Batch Compile\OBSE\Plugins</MO2DeployPath>
   </PropertyGroup>
   <ItemGroup>
     <BuildMacro Include="OblivionPath">

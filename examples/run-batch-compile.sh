@@ -15,7 +15,9 @@
 set -euo pipefail
 
 MO2_PATH="${MO2_PATH:-D:/Modlists/Reborn/ModOrganizer.exe}"
-MO2_PROFILE="${MO2_PROFILE:-Reborn-Base}"
+# Empty instance => use the currently-running MO2 instance (or default).
+# A name here would be an MO2 *instance* (e.g. "Portable"), not a profile.
+MO2_INSTANCE="${MO2_INSTANCE:-}"
 MO2_EXEC_NAME="${MO2_EXEC_NAME:-CSE Batch Compile}"
 
 PLUGIN=""
@@ -52,10 +54,11 @@ export CSE_BATCH_RESULT="$RESULT"
 echo ">> CSE_BATCH_ONE     = $CSE_BATCH_ONE"
 [[ -n "${CSE_BATCH_FORMID:-}" ]] && echo ">> CSE_BATCH_FORMID  = $CSE_BATCH_FORMID"
 echo ">> CSE_BATCH_RESULT  = $CSE_BATCH_RESULT"
-echo ">> launching MO2: $MO2_PROFILE / $MO2_EXEC_NAME"
+echo ">> launching MO2: instance='${MO2_INSTANCE}' / exec='${MO2_EXEC_NAME}'"
 
-# Pattern A — moshortcut:// (args from ModOrganizer.ini, env-vars inherited).
-"$MO2_PATH" "moshortcut://${MO2_PROFILE}:${MO2_EXEC_NAME}"
+# Pattern A — moshortcut://<instance>:<exec> (args from ModOrganizer.ini,
+# env-vars inherited). Empty instance uses the current MO2 instance.
+"$MO2_PATH" "moshortcut://${MO2_INSTANCE}:${MO2_EXEC_NAME}"
 
 if [[ -f "$RESULT" ]]; then
     echo ">> result:"
