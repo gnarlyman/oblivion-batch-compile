@@ -1,0 +1,5 @@
+LIBRARY oblivion-batch-compile
+
+EXPORTS
+    OBSEPlugin_Query
+    OBSEPlugin_Load

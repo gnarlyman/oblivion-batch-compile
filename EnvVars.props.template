@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copy this file to EnvVars.props and edit the paths to match your local
+  checkouts. EnvVars.props is gitignored. The two dependencies are header-only:
+
+    XSECommonIncludePath -> shadeMe/OBSE-Plugin-Build-Dependencies (repo root)
+    SMESundriesIncludePath -> shadeMe/SME-Sundries (repo root)
+
+  Clone them anywhere; point these macros at the clones.
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <XSECommonIncludePath>D:\Modlists\_clones\OBSE-Plugin-Build-Dependencies</XSECommonIncludePath>
+    <SMESundriesIncludePath>D:\Modlists\_clones\SME-Sundries</SMESundriesIncludePath>
+    <OblivionPath>D:\Modlists\Reborn\Stock Game</OblivionPath>
+    <!-- Where the post-build step copies the DLL. Typically a path inside an
+         MO2 mod folder so USVFS overlays it when you launch through MO2.
+         Leave empty to skip post-build deployment. -->
+    <MO2DeployPath>D:\Modlists\Reborn\mods\CSE Batch Compile\obse\plugins</MO2DeployPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <BuildMacro Include="XSECommonIncludePath">
+      <Value>$(XSECommonIncludePath)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="SMESundriesIncludePath">
+      <Value>$(SMESundriesIncludePath)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="OblivionPath">
+      <Value>$(OblivionPath)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="MO2DeployPath">
+      <Value>$(MO2DeployPath)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

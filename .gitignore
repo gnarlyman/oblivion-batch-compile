@@ -1,0 +1,26 @@
+# Build outputs
+Build/
+Debug/
+Release/
+*.user
+*.suo
+.vs/
+ipch/
+*.aps
+*.tlog
+*.idb
+*.pdb
+*.obj
+*.exp
+*.lib
+*.dll
+*.ilk
+*.log
+*.recipe
+
+# Local-machine paths
+EnvVars.props
+
+# Editor
+.vscode/
+.idea/
