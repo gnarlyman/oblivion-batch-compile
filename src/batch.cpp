@@ -2,11 +2,14 @@
 
 #include <Windows.h>
 
+#include <cstdlib>
 #include <cstring>
+#include <string>
 #include <vector>
 
 #include "compiler_patches.h"
 #include "cs_internals.h"
+#include "cse_interop.h"
 #include "log.h"
 #include "result.h"
 #include "sha256.h"
@@ -139,9 +142,16 @@ void RunBatch(const BatchConfig& cfg) {
 
     OBC_LOG("RunBatch: starting on plugin '%s'", cfg.targetPlugin.c_str());
 
-    // Install CSE-derived compiler-error detours so vanilla CS rejection
-    // paths (line length, missing refs, etc.) don't fail the compile.
-    cs::PatchCompilerErrorDetours();
+    // Compiler-error detours: if CSE is loaded, its patches are already
+    // active at the same byte addresses we'd patch. Overwriting them
+    // with ours breaks CSE's pipeline because our handlers reference
+    // different globals than CSE's internal code expects. Apply ours
+    // only as a fallback when CSE is absent.
+    if (cse::TryAcquire()) {
+        OBC_LOG("RunBatch: CSE detected; deferring to its compiler-error patches");
+    } else {
+        cs::PatchCompilerErrorDetours();
+    }
 
     cs::TESFile* file = nullptr;
     if (!LoadTargetPlugin(cfg.targetPlugin, file, result.overallError)) {
@@ -169,7 +179,73 @@ void RunBatch(const BatchConfig& cfg) {
         return;
     }
 
-    RecompileScripts(targets, result);
+    // Capture SCDA-before for each target so we can compare regardless of
+    // which compile path we take.
+    std::vector<ScriptResult> rs;
+    rs.reserve(targets.size());
+    for (auto* s : targets) {
+        ScriptResult r;
+        r.editorId = s->editorID.c_str();
+        r.formId   = s->formID;
+        CaptureScda(s, r.scdaLengthBefore, r.scdaSha256Before);
+        rs.push_back(std::move(r));
+    }
+
+    // If CSE's preprocessor is loaded, mirror CSE's RecompileScripts
+    // pattern (preprocess SCTX → SetText(preprocessed) → Compile →
+    // SetText(original)) so macros / long lines are handled before the
+    // bare CS compiler sees the source.
+    constexpr unsigned kPreprocBufSize = 2u * 1024u * 1024u;
+    char* preprocBuf = nullptr;
+    bool havePreprocessor = cse::TryAcquirePreprocessor();
+    if (havePreprocessor) {
+        preprocBuf = static_cast<char*>(std::malloc(kPreprocBufSize));
+        if (!preprocBuf) havePreprocessor = false;
+    }
+
+    for (size_t i = 0; i < targets.size(); ++i) {
+        cs::Script* s = targets[i];
+        ScriptResult& r = rs[i];
+
+        std::string originalText = s->text ? s->text : "";
+
+        if (havePreprocessor) {
+            std::memset(preprocBuf, 0, kPreprocBufSize);
+            bool ppOk = cse::Preprocess(originalText.c_str(), preprocBuf, kPreprocBufSize);
+            if (ppOk) {
+                cs::ScriptSetText(s, preprocBuf);
+                OBC_LOG("Compile: %s — preprocessor produced %zu bytes",
+                        r.editorId.c_str(), std::strlen(preprocBuf));
+            } else {
+                OBC_LOG("Compile: %s — preprocessor returned false; compiling raw SCTX",
+                        r.editorId.c_str());
+            }
+        }
+
+        bool ok = false;
+        try {
+            ok = cs::ScriptCompile(s, /*asResultScript=*/false);
+        } catch (...) {
+            r.error = "exception during Compile()";
+        }
+
+        if (havePreprocessor) {
+            cs::ScriptSetText(s, originalText.c_str());
+        }
+
+        CaptureScda(s, r.scdaLengthAfter, r.scdaSha256After);
+        r.compileOk = ok && (s->compileResult != 0);
+        if (!r.compileOk && r.error.empty()) {
+            r.error = ok ? "Compile() returned true but compileResult flag is zero"
+                         : "Compile() returned false";
+        }
+        OBC_LOG("Compile: %s — ok=%d, SCDA after: %zu bytes",
+                r.editorId.c_str(), r.compileOk ? 1 : 0, r.scdaLengthAfter);
+
+        result.scripts.push_back(std::move(r));
+    }
+
+    if (preprocBuf) std::free(preprocBuf);
 
     SaveAndClose(result);
     result.WriteJson(cfg.resultPath);

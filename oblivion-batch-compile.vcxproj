@@ -107,6 +107,7 @@
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\obse_minimal.h" />
     <ClInclude Include="src\compiler_patches.h" />
+    <ClInclude Include="src\cse_interop.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\obse_main.cpp" />
@@ -117,6 +118,7 @@
     <ClCompile Include="src\sha256.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\compiler_patches.cpp" />
+    <ClCompile Include="src\cse_interop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="oblivion-batch-compile.def" />
