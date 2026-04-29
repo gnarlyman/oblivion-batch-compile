@@ -5,6 +5,7 @@
 #include <cstring>
 #include <vector>
 
+#include "compiler_patches.h"
 #include "cs_internals.h"
 #include "log.h"
 #include "result.h"
@@ -137,6 +138,10 @@ void RunBatch(const BatchConfig& cfg) {
     result.overallStatus = "ok";
 
     OBC_LOG("RunBatch: starting on plugin '%s'", cfg.targetPlugin.c_str());
+
+    // Install CSE-derived compiler-error detours so vanilla CS rejection
+    // paths (line length, missing refs, etc.) don't fail the compile.
+    cs::PatchCompilerErrorDetours();
 
     cs::TESFile* file = nullptr;
     if (!LoadTargetPlugin(cfg.targetPlugin, file, result.overallError)) {

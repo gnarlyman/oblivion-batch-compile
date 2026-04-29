@@ -9,6 +9,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
+    <!-- shadeMe/SME-Sundries clone — provides MemoryHandler.h macros for
+         the CSE compiler-error patches we replicate. -->
+    <SMESundriesIncludePath>D:\Modlists\_clones\SME-Sundries</SMESundriesIncludePath>
     <OblivionPath>D:\Modlists\Reborn\Stock Game</OblivionPath>
     <!-- Where the post-build step copies the DLL. Typically a path inside an
          MO2 mod folder so USVFS overlays it when you launch through MO2.
@@ -16,6 +19,10 @@
     <MO2DeployPath>D:\Modlists\Reborn\mods\CSE Batch Compile\OBSE\Plugins</MO2DeployPath>
   </PropertyGroup>
   <ItemGroup>
+    <BuildMacro Include="SMESundriesIncludePath">
+      <Value>$(SMESundriesIncludePath)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
     <BuildMacro Include="OblivionPath">
       <Value>$(OblivionPath)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
