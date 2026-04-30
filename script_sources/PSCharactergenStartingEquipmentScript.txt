@@ -1,0 +1,1056 @@
+scn PSCharactergenStartingEquipmentScript
+
+short doOnce
+ref DLHorseArmorQuest
+ref DLHorseArmorNote
+ref DLOrreryBandit1
+ref DLOrreryBandit2
+ref DLOrreryBandit3
+ref DLOrreryBandit4
+ref DLOrreryBandit5
+ref DLOrreryNote
+ref DLOrreryQuest
+ref DLFrostcragQuest
+ref DLThievesDenQuest
+ref DLVileLairQuest
+ref DLMehrunesRazorQuest
+ref DLSundercliffMapMarker
+ref DLBattlehornQuest
+float fQuestDelayTime
+
+begin Gamemode
+	if (doOnce == 0)
+		if (Player.GetClassSpecialization == 0)
+			if (PSCharactergen.WealthStatus == 2)
+				if (Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))
+					Player.AddItemNS WeapIronLongsword 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapIronMace 1
+				endif
+				if (Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0)
+					Player.AddItemNS WeapIronDagger 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 2
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS FurShield 1
+					else
+						Player.AddItemNS IronShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS IronCuirass 1
+					Player.AddItemNS IronGreaves 1
+					Player.AddItemNS IronGauntlets 1
+					Player.AddItemNS IronBoots 1
+					Player.AddItemNS IronHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS FurCuirass 1
+					Player.AddItemNS FurGreaves 1
+					Player.AddItemNS FurGauntlets 1
+					Player.AddItemNS FurBoots 1
+					Player.AddItemNS FurHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 3
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapIronBow 1
+					Player.AdditemNS Arrow1Iron 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestle 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			elseif (PSCharactergen.WealthStatus == 3)
+				if (Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))
+					Player.AddItemNS WeapSteelLongsword 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapSteelMace 1
+				endif
+				if (Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0)
+					Player.AddItemNS WeapSteelDagger 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 5
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS LeatherShield 1
+					else
+						Player.AddItemNS SteelShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS SteelCuirass 1
+					Player.AddItemNS SteelGreaves 1
+					Player.AddItemNS SteelGauntlets 1
+					Player.AddItemNS SteelBoots 1
+					Player.AddItemNS SteelHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS LeatherCuirass 1
+					Player.AddItemNS LeatherGreaves 1
+					Player.AddItemNS LeatherGauntlets 1
+					Player.AddItemNS LeatherBoots 1
+					Player.AddItemNS LeatherHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 5
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapSteelBow 1
+					Player.AdditemNS Arrow2Steel 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestle 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			elseif (PSCharactergen.WealthStatus == 4)
+				if (Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))
+					Player.AddItemNS WeapSteelLongsword 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapSteelMace 1
+				endif
+				if (Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0)
+					Player.AddItemNS WeapSteelDagger 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 10
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS ChainmailShield 1
+					else
+						Player.AddItemNS SteelShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS SteelCuirass 1
+					Player.AddItemNS SteelGreaves 1
+					Player.AddItemNS SteelGauntlets 1
+					Player.AddItemNS SteelBoots 1
+					Player.AddItemNS SteelHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS ChainmailCuirass 1
+					Player.AddItemNS ChainmailGreaves 1
+					Player.AddItemNS ChainmailGauntlets 1
+					Player.AddItemNS ChainmailBoots 1
+					Player.AddItemNS ChainmailHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 10
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapSteelBow 1
+					Player.AdditemNS Arrow2Steel 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestle 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			elseif (PSCharactergen.WealthStatus == 5)
+				if (Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))
+					Player.AddItemNS WeapSilverLongsword 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapSilverMace 1
+				endif
+				if (Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0)
+					Player.AddItemNS WeapSilverDagger 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 15
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS ChainmailShield 1
+					else
+						Player.AddItemNS SteelShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS SteelCuirass 1
+					Player.AddItemNS SteelGreaves 1
+					Player.AddItemNS SteelGauntlets 1
+					Player.AddItemNS SteelBoots 1
+					Player.AddItemNS SteelHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS ChainmailCuirass 1
+					Player.AddItemNS ChainmailGreaves 1
+					Player.AddItemNS ChainmailGauntlets 1
+					Player.AddItemNS ChainmailBoots 1
+					Player.AddItemNS ChainmailHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 15
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapSilverBow 1
+					Player.AdditemNS Arrow3Silver 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestleApprentice 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			endif
+		elseif (Player.GetClassSpecialization == 1)
+			if (PSCharactergen.WealthStatus == 2)
+				if ((Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))) || ((Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0))
+					Player.AddItemNS WeapIronDagger 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapIronWarAxe 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 1
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS FurShield 1
+					else
+						Player.AddItemNS IronShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS IronCuirass 1
+					Player.AddItemNS IronGreaves 1
+					Player.AddItemNS IronGauntlets 1
+					Player.AddItemNS IronBoots 1
+					Player.AddItemNS IronHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS FurCuirass 1
+					Player.AddItemNS FurGreaves 1
+					Player.AddItemNS FurGauntlets 1
+					Player.AddItemNS FurBoots 1
+					Player.AddItemNS FurHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 3
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapIronBow 1
+					Player.AdditemNS Arrow1Iron 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestle 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			elseif (PSCharactergen.WealthStatus == 3)
+				if ((Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))) || ((Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0))
+					Player.AddItemNS WeapSteelDagger 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapSteelWarAxe 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 3
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS LeatherShield 1
+					else
+						Player.AddItemNS SteelShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS SteelCuirass 1
+					Player.AddItemNS SteelGreaves 1
+					Player.AddItemNS SteelGauntlets 1
+					Player.AddItemNS SteelBoots 1
+					Player.AddItemNS SteelHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS LeatherCuirass 1
+					Player.AddItemNS LeatherGreaves 1
+					Player.AddItemNS LeatherGauntlets 1
+					Player.AddItemNS LeatherBoots 1
+					Player.AddItemNS LeatherHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 5
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapSteelBow 1
+					Player.AdditemNS Arrow2Steel 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestle 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardRestoreHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			elseif (PSCharactergen.WealthStatus == 4)
+				if ((Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))) || ((Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0))
+					Player.AddItemNS WeapSteelDagger 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapSteelWarAxe 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 5
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS ChainmailShield 1
+					else
+						Player.AddItemNS SteelShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS SteelCuirass 1
+					Player.AddItemNS SteelGreaves 1
+					Player.AddItemNS SteelGauntlets 1
+					Player.AddItemNS SteelBoots 1
+					Player.AddItemNS SteelHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS ChainmailCuirass 1
+					Player.AddItemNS ChainmailGreaves 1
+					Player.AddItemNS ChainmailGauntlets 1
+					Player.AddItemNS ChainmailBoots 1
+					Player.AddItemNS ChainmailHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 10
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapSteelBow 1
+					Player.AdditemNS Arrow2Steel 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestle 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			elseif (PSCharactergen.WealthStatus == 5)
+				if ((Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))) || ((Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0))
+					Player.AddItemNS WeapSilverDagger 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapSilverWarAxe 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 10
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS ChainmailShield 1
+					else
+						Player.AddItemNS SteelShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS SteelCuirass 1
+					Player.AddItemNS SteelGreaves 1
+					Player.AddItemNS SteelGauntlets 1
+					Player.AddItemNS SteelBoots 1
+					Player.AddItemNS SteelHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS ChainmailCuirass 1
+					Player.AddItemNS ChainmailGreaves 1
+					Player.AddItemNS ChainmailGauntlets 1
+					Player.AddItemNS ChainmailBoots 1
+					Player.AddItemNS ChainmailHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 15
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapSilverBow 1
+					Player.AdditemNS Arrow3Silver 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestleApprentice 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			endif
+		elseif (Player.GetClassSpecialization == 2)
+			if (PSCharactergen.WealthStatus == 2)
+				if (Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))
+					Player.AddItemNS WeapIronShortsword 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapIronWarAxe 1
+				endif
+				if (Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0)
+					Player.AddItemNS WeapIronDagger 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 1
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS FurShield 1
+					else
+						Player.AddItemNS IronShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS IronCuirass 1
+					Player.AddItemNS IronGreaves 1
+					Player.AddItemNS IronGauntlets 1
+					Player.AddItemNS IronBoots 1
+					Player.AddItemNS IronHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS FurCuirass 1
+					Player.AddItemNS FurGreaves 1
+					Player.AddItemNS FurGauntlets 1
+					Player.AddItemNS FurBoots 1
+					Player.AddItemNS FurHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 5
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapIronBow 1
+					Player.AdditemNS Arrow1Iron 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestle 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			elseif (PSCharactergen.WealthStatus == 3)
+				if (Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))
+					Player.AddItemNS WeapSteelShortsword 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapSteelWarAxe 1
+				endif
+				if (Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0)
+					Player.AddItemNS WeapSteelDagger 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 3
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS LeatherShield 1
+					else
+						Player.AddItemNS SteelShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS SteelCuirass 1
+					Player.AddItemNS SteelGreaves 1
+					Player.AddItemNS SteelGauntlets 1
+					Player.AddItemNS SteelBoots 1
+					Player.AddItemNS SteelHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS LeatherCuirass 1
+					Player.AddItemNS LeatherGreaves 1
+					Player.AddItemNS LeatherGauntlets 1
+					Player.AddItemNS LeatherBoots 1
+					Player.AddItemNS LeatherHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 10
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapSteelBow 1
+					Player.AdditemNS Arrow2Steel 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestle 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			elseif (PSCharactergen.WealthStatus == 4)
+				if (Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))
+					Player.AddItemNS WeapSteelShortsword 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapSteelWarAxe 1
+				endif
+				if (Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0)
+					Player.AddItemNS WeapSteelDagger 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 5
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS ChainmailShield 1
+					else
+						Player.AddItemNS SteelShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS SteelCuirass 1
+					Player.AddItemNS SteelGreaves 1
+					Player.AddItemNS SteelGauntlets 1
+					Player.AddItemNS SteelBoots 1
+					Player.AddItemNS SteelHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS ChainmailCuirass 1
+					Player.AddItemNS ChainmailGreaves 1
+					Player.AddItemNS ChainmailGauntlets 1
+					Player.AddItemNS ChainmailBoots 1
+					Player.AddItemNS ChainmailHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 15
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapSteelBow 1
+					Player.AdditemNS Arrow2Steel 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestle 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			elseif (PSCharactergen.WealthStatus == 5)
+				if (Player.IsClassSkill Blade == 1) && ((Player.IsClassSkill Blunt == 0) || (Player.GetActorValue Blade >= Player.GetActorValue Blunt))
+					Player.AddItemNS WeapSilverShortsword 1
+				endif
+				if (Player.IsClassSkill Blunt == 1) && ((Player.IsClassSkill Blade == 0) || (Player.GetActorValue Blunt > Player.GetActorValue Blade))
+					Player.AddItemNS WeapSilverWarAxe 1
+				endif
+				if (Player.IsClassSkill Blade == 0) && (Player.IsClassSkill Blunt == 0)
+					Player.AddItemNS WeapSilverDagger 1
+				endif
+				if (Player.IsClassSkill Armorer == 1)
+					Player.AddItemNS RepairHammer 10
+				endif
+				if (Player.IsClassSkill Block == 1)
+					if (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor)
+						Player.AddItemNS ChainmailShield 1
+					else
+						Player.AddItemNS SteelShield 1
+					endif
+				endif
+				if (Player.IsClassSkill HeavyArmor == 1) && ((Player.IsClassSkill LightArmor == 0) || (Player.GetActorValue HeavyArmor >= Player.GetActorValue LightArmor))
+					Player.AddItemNS SteelCuirass 1
+					Player.AddItemNS SteelGreaves 1
+					Player.AddItemNS SteelGauntlets 1
+					Player.AddItemNS SteelBoots 1
+					Player.AddItemNS SteelHelmet 1
+				endif
+				if (Player.IsClassSkill LightArmor == 1)&& ((Player.IsClassSkill HeavyArmor == 0) || (Player.GetActorValue LightArmor > Player.GetActorValue HeavyArmor))
+					Player.AddItemNS ChainmailCuirass 1
+					Player.AddItemNS ChainmailGreaves 1
+					Player.AddItemNS ChainmailGauntlets 1
+					Player.AddItemNS ChainmailBoots 1
+					Player.AddItemNS ChainmailHelmet 1
+				endif
+				if (Player.IsClassSkill Security == 1)
+					Player.AddItemNS Lockpick 30
+				endif
+				if (Player.IsClassSkill Marksman == 1)
+					Player.AddItemNS WeapSilverBow 1
+					Player.AdditemNS Arrow3Silver 20
+				endif
+				if (Player.IsClassSkill Destruction == 1)
+					Player.AddSpellNS StandardFrostDamageTarget1Novice
+					Player.AddSpellNS StandardShockDamageTarget1Novice
+					Player.AddSpellNS StandardFireDamageTouch1Novice
+				endif
+				if (Player.IsClassSkill Alchemy == 1)
+					Player.AddItemNS MortarPestleApprentice 1
+				endif
+				if (Player.IsClassSkill Restoration == 1)
+					Player.AddSpellNS StandardAbsorbFatigue1Novice
+					Player.AddSpellNS StandardRestoreHealthTarget2Apprentice
+					Player.AddSpellNS StandardFortifyHealth2Apprentice
+					Player.AddSpellNS StandardRestoreFatigue1Novice
+				endif
+				if (Player.IsClassSkill Conjuration == 1)
+					Player.AddSpellNS StandardBoundArmor1NoviceTest
+					if (Player.GetActorValue Blunt > Player.GetActorValue Blade) || (Player.IsClassSkill Blunt == 1)
+						Player.AddSpellNS StandardBoundAxeApprentice
+					else
+						Player.AddSpellNS StandardBoundDaggerNovice
+					endif
+				endif
+				if (Player.IsClassSkill Alteration == 1)
+					Player.AddSpellNS StandardWaterWalking2Apprentice
+					Player.AddSpellNS StandardFeather2Apprentice
+					Player.AddSpellNS StandardShieldTarget1Novice
+				endif
+				if (Player.IsClassSkill Illusion == 1)
+					Player.AddSpellNS StandardNightEye2Apprentice
+					Player.AddSpellNS StandardFrenzyTarget1Novice
+					Player.AddSpellNS StandardCommandCreature2Apprentice
+					Player.AddSpellNS StandardCharmTouch1Novice
+				endif
+				if (Player.IsClassSkill Mysticism == 1)
+					Player.AddSpellNS StandardDispelTarget2Apprentice
+					Player.AddSpellNS StandardSoulTrap2Apprentice
+					Player.AddSpellNS StandardTelekinesis2Apprentice
+				endif
+			endif
+		endif
+
+		if (PSCharactergen.WealthStatus != 1)
+			Player.AddItemNS PotionRestoreHealthW 10
+			Player.AddItemNS PotionRestoreMagickaW 3
+			Player.AddItemNS PotionRestoreFatigueW 1
+		endif
+
+		if (IsModLoaded "Oblivion DLC Delayers.esp" == 1 || IsModLoaded "Delay DLC Start.esp" == 1)
+			;Just skip to the end if an alternate way of starting the DLC is installed.
+			set doOnce to 9
+		else
+			set doOnce to 1
+		endif
+
+	elseif (doOnce == 1)
+		set doOnce to 2
+		if (IsModLoaded "DLCShiveringIsles.esp" == 1)
+			set SE01Door.startday to (GameDaysPassed)
+			set SE01Door.doOnce2 to 1
+		endif
+	elseif (doOnce == 2)
+		set doOnce to 3
+		if (IsModLoaded "DLCHorseArmor.esp" == 1)
+			set DLHorseArmorQuest to (GetFormFromMod "DLCHorseArmor.esp" 000CEC)
+			set DLHorseArmorNote to (GetFormFromMod "DLCHorseArmor.esp" 005235)
+			SetStage DLHorseArmorQuest 30
+			Player.AddItem DLHorseArmorNote 1
+			SnakgraBuraRef.ModDisposition Player 20
+		endif
+	elseif (doOnce == 3)
+		set doOnce to 4
+		if (IsModLoaded "DLCFrostcrag.esp" == 1)
+			set DLFrostcragQuest to (GetFormFromMod "DLCFrostcrag.esp" 000D53)
+			SetStage DLFrostcragQuest 10
+		endif
+	elseif (doOnce == 4)
+		set doOnce to 5
+		if (IsModLoaded "DLCThievesDen.esp" == 1)
+			set DLThievesDenQuest to (GetFormFromMod "DLCThievesDen.esp" 003E84)
+			SetStage DLThievesDenQuest 10
+		endif
+	elseif (doOnce == 5)
+		set doOnce to 6
+		if (IsModLoaded "DLCVileLair.esp" == 1)
+			set DLVileLairQuest to (GetFormFromMod "DLCVileLair.esp" 0041C4)
+			SetStage DLVileLairQuest 10
+		endif
+	elseif (doOnce == 6)
+		set doOnce to 7
+		if (IsModLoaded "DLCMehrunesRazor.esp" == 1)
+			set DLMehrunesRazorQuest to (GetFormFromMod "DLCMehrunesRazor.esp" 000ED9)
+			set DLSundercliffMapMarker to (GetFormFromMod "DLCMehrunesRazor.esp" 00206B)
+			SetStage DLMehrunesRazorQuest 10
+			ShowMap DLSundercliffMapMarker
+		endif
+	elseif (doOnce == 7)
+		set doOnce to 8
+		if (IsModLoaded "DLCBattlehornCastle.esp" == 1)
+			set DLBattlehornQuest to (GetFormFromMod "DLCBattlehornCastle.esp" 00B089)
+			SetStage DLBattlehornQuest 10
+		endif
+	elseif (doOnce == 8)
+		set doOnce to 9
+		if (IsModLoaded "DLCOrrery.esp" == 1)
+			set DLOrreryBandit1 to (GetFormFromMod "DLCOrrery.esp" 129C3E)
+			set DLOrreryBandit2 to (GetFormFromMod "DLCOrrery.esp" 129C40)
+			set DLOrreryBandit3 to (GetFormFromMod "DLCOrrery.esp" 129C41)
+			set DLOrreryBandit4 to (GetFormFromMod "DLCOrrery.esp" 129C42)
+			set DLOrreryBandit5 to (GetFormFromMod "DLCOrrery.esp" 129C43)
+			set DLOrreryQuest to (GetFormFromMod "DLCOrrery.esp" 11B9FB)
+			set DLOrreryNote to (GetFormFromMod "DLCOrrery.esp" 11B9FD)
+			DLOrreryBandit1.Enable
+			DLOrreryBandit1.PosWorld -146945.796 30078.8672 12828.7764 0 Tamriel
+			DLOrreryBandit2.Enable
+			DLOrreryBandit2.PosWorld -112172.601 44503.8438 12771.8730 0 Tamriel
+			DLOrreryBandit3.Enable
+			DLOrreryBandit3.PosWorld -116540.562 18500.7324 7787.8286 0 Tamriel
+			DLOrreryBandit4.Enable
+			DLOrreryBandit4.PosWorld -174006.125 6376.1973 6252.8516, 0, Tamriel
+			DLOrreryBandit5.Enable	
+			DLOrreryBandit5.PosWorld -182350.625 27022.1504 5340.9019 0 Tamriel
+			Player.AddItem DLOrreryNote 1
+			SetStage DLOrreryQuest 10
+		endif
+	elseif (doOnce == 9)
+		StopQuest PSCharactergenStartingEquipment
+	endif
+end
+;<CSEBlock>
+;<CSECaretPos> 41239 </CSECaretPos>
+;</CSEBlock>
