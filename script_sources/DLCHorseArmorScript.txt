@@ -1,0 +1,23 @@
+ScriptName DLCHorseArmorScript
+
+short GiveArmor
+short NoHorse
+short IsLastHorseArmoredSteel
+short IsLastHorseArmoredElven
+short IsLastHorseLegal
+
+Begin GameMode
+
+if ( getStage DLCHorseArmor <= 0 ) && ( player.IsInCombat == 0 ) && (GetStage PSCharacterGen >= 80)
+	setstage DLCHorseArmor 30
+	player.additem DLCHorseArmorNote 1
+	SnakGraBuraRef.ModDisposition Player 20
+endif
+
+
+end
+
+
+;<CSEBlock>
+;<CSECaretPos> 275 </CSECaretPos>
+;</CSEBlock>

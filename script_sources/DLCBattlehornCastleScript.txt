@@ -1,0 +1,79 @@
+scn DLCBattlehornCastleScript
+
+float fQuestDelayTime
+short TotalBought		; counts number of items purchased
+short Sparring			; set to 1 while player is sparring with trainer
+short TrophyCount		; counts number of trophies created
+ref FollowerRef			; set to knight who is currently following player
+short Following			; 0 = no one following; 1 = following; 2 = waiting
+short FollowerClear		; set to 1 to clear follower variables
+short Following01		; set to 1 when knight is following player, 2 when waiting
+short Following02		; set to 1 when knight is following player, 2 when waiting
+short Following03		; set to 1 when knight is following player, 2 when waiting
+short Following04		; set to 1 when knight is following player, 2 when waiting
+short Following05		; set to 1 when knight captain is following player, 2 when waiting
+short MaidFollow		; set to 1 when maid is following
+short AttackersDead		; tracks how many attackers have been killed
+
+begin gamemode
+
+;kickoff block
+
+if ( GetStage DLCBattlehornCastle <= 0 ) && ( Player.IsInCombat == 0 ) && ( GetStage PSCharactergen >= 80 )
+	SetStage DLCBattlehornCastle 10
+endif
+
+;arrival trigger
+
+if GetStage DLCBattlehornCastle == 10
+	if ( Player.GetDistance BattlehornCastleGateREF <= 5000 )
+		SetStage DLCBattlehornCastle 18
+	endif
+endif
+
+if GetStage DLCBattlehornCastle == 18
+	if ( Player.GetDistance BattlehornCastleGateREF <= 2000 )
+		SetStage DLCBattlehornCastle 20
+	endif
+endif
+
+; attackers all dead
+if getStage DLCBattlehornCastle < 28
+	if AttackersDead >= 4
+		setstage DLCBattlehornCastle 28
+	endif
+endif
+
+; adds forge receipt to vendor after you buy one thing
+if TotalBought > 0 && GetStageDone DLCBattlehornCastle 40 == 0
+	if player.getincell BattlehornCastle == 1
+		setstage DLCBattlehornCastle 40
+		DLCBhornKnightRef.Evp
+	endif
+endif
+
+; *** Set new informational stage.
+if TotalBought > 0 && GetStageDone DLCBattlehornCastle 35 == 0
+	SetStage DLCBattlehornCastle 35
+endif
+
+; *** Set final stage in main script so you exit dialogue session before it sets.
+; *** Final stage signified by number bought.
+if GetStage DLCBattlehornCastle < 100
+	if DLCBattlehornCastle.TotalBought >= 9
+		SetStage DLCBattlehornCastle 100
+	endif
+endif
+
+;***Handle clearing of follower variables***
+if ( FollowerClear == 1 )
+	set Following01 to 0
+	set Following02 to 0
+	set Following03 to 0
+	set Following04 to 0
+	set Following05 to 0
+	set Following to 0
+	set FollowerClear to 0
+endif
+
+end

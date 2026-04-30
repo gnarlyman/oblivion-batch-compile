@@ -1,0 +1,104 @@
+scn DLCDeepscornScript
+
+float fQuestDelayTime
+short Arrived
+short Book
+short Doonce
+short Doonce1
+short Doonce2
+short Doonce3
+short Doonce4
+short Doonce5
+short Doonce6
+short Doonce7
+short TotalCount
+
+Begin GameMode
+
+;kickoff block
+
+if ( GetStage DLCDeepscorn <= 0 ) && ( Player.IsInCombat == 0 ) && ( GetStage PSCharactergen >= 80 )
+	SetStage DLCDeepscorn 10
+endif
+
+;arrival trigger
+
+;UOMP changed map marker range to 1500 to prevent bug caused by player entering Lair without triggering quest advance
+; *** Changed distance from 3000 to 1500, per the comments.
+if ( Player.GetDistance DeepscornHollowMapMarker <= 1500 ) && ( GetStage DLCDeepscorn == 10 ) && ( Arrived == 0 )
+	SetStage DLCDeepscorn 20
+	Set Arrived to 1
+endif
+
+;book trigger
+
+if ( Player.GetDistance DeepscornHollowJournalRef <= 200 ) && ( GetStage DLCDeepscorn >= 20 ) && ( Book == 0 )
+	SetStage DLCDeepscorn 30
+	Set Book to 1
+endif
+
+;These are the variable triggers that are set when a voucher is acquired
+
+if ( Player.GetItemCount DeepscornBedroomReceipt == 1 ) && ( Doonce == 0 )
+	LairVileBedroomMarker.Enable
+	set TotalCount to ( TotalCount + 1 )
+	set Doonce to 1
+endif
+
+if ( Player.GetItemCount DeepscornCellReceipt == 1 ) && ( Doonce1 == 0 )
+	LairVilePrisonMarker.Enable
+	set TotalCount to ( TotalCount + 1 )
+	set Doonce1 to 1
+endif
+
+if ( Player.GetItemCount DeepscornDiningReceipt == 1 ) && ( Doonce2 == 0 )
+	LairVileDiningArea.Enable
+	set TotalCount to ( TotalCount + 1 )
+	set Doonce2 to 1
+endif
+
+if ( Player.GetItemCount DeepscornMinionReceipt == 1 ) && ( Doonce3 == 0 )
+	LairVileBoxingMarker.Enable
+	LairVileMinionRef.Enable
+	set TotalCount to ( TotalCount + 1 )
+	set Doonce3 to 1
+endif
+
+if ( Player.GetItemCount DeepscornStorageReceipt == 1 ) && ( Doonce4 == 0 )
+	LairVileMinionStockMarker.Enable
+	set TotalCount to ( TotalCount + 1 )
+	set Doonce4 to 1
+endif
+
+if ( Player.GetItemCount DeepscornStudyReceipt == 1 ) && ( Doonce5 == 0 )
+	LairVileStudy.Enable
+	set TotalCount to ( TotalCount + 1 )
+	set Doonce5 to 1
+endif
+
+if ( Player.GetItemCount DeepscornVenomgrowthReceipt == 1 ) && ( Doonce6 == 0 )
+	LairVileTendingMarker.Enable
+	set TotalCount to ( TotalCount + 1 )
+	set Doonce6 to 1
+endif
+
+if ( Player.GetItemCount IchorofSithis == 1 ) && ( Doonce7 == 0 )
+	set TotalCount to ( TotalCount + 1 )
+	set Doonce7 to 1
+endif
+
+;Ends Quest if All Bought
+;UOMP adds RemovalAllItems and AddItem lines to fix the bug where the Raiment level was set by the player's level when the DLC plugin is installed
+;(or 1 for a new game) rather than when all the upgrades are purchased and the Raiment is available
+
+if GetStage DLCDeepscorn < 50
+	if ( TotalCount == 8 )
+		LairVileArmoireRef.RemoveAllItems
+		LairVileArmoireRef.AddItem LairVileRaimentLvl100 1
+		LairVileArmoireRef.Enable
+		SetStage DLCDeepscorn 50
+		set fQuestDelayTime to 0
+	endif
+endif
+
+End

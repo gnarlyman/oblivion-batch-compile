@@ -1,0 +1,98 @@
+scn DL9QuestSCRIPT
+
+; *** Removed extra spaces before comments so they are on the same line with code.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;    DECLARE VARS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Bezoar/Locked door Vars
+short Bezoar01placed ; Tracks when each pedestal is filled
+short Bezoar02placed
+short BezoarDoOnce ; Housekeeping boolean
+short Bezoar01taken ; Tracks of player has taken Bezoar 1 - Commander
+short Bezoar02taken ; Tracks of player has taken Bezoar 2 - Forgemaster
+
+; DoOnce Flags
+short DoOnceStage70
+
+; Mehrunes Razor Vars
+short MehrunesRazorDayLastCast ; Used to track daily castings.
+short DL9SoulTotal ; Used to track souls claimed
+
+;Morag Tong Assassin Vars
+short MoragTongCellStatus
+short MoragTongKillStatus
+
+;Nefarivigum Vars
+short ChoseAlternateSolution ; Flag on if PC hates cannibalism
+short ForcedDoorOpen
+
+;Actors Scene Vars
+short DoActorTriggerOnce
+
+float fQuestDelayTime ; *** For improved stage feedback.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;    BEGIN MAIN BODY
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+begin Gamemode
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;kickoff block
+;
+;	Quest journal intializes after chargen
+if ( GetStage DL9MehrunesQuest <= 0 ) && ( Player.IsInCombat == 0 ) && ( GetStage PSCharacterGen >= 80 )
+	SetStage DL9MehrunesQuest 10
+	ShowMap DL09MapMarker; 1 ; do NOT allow player to fast-travel here right away
+endif
+
+;;;;;;;;;;;;;;;;;;;;;
+; Bezoar Locked Door Blocks
+;
+;	Checks if both pedestals are filled
+if BezoarDoOnce != 1
+	if Bezoar01placed == 1
+		if Bezoar02placed == 1
+			SetStage DL9MehrunesQuest 60 ; Journal Entry to drive the point home
+			DL9BezoarDoorMarker.disable ;This marker has the blocking elements as children.
+			set BezoarDoOnce to 1
+		endif
+	endif
+endif
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Entering Varsa Baalim
+;
+;	Flags a var when player enters Ayleid City
+if DoOnceStage70 == 0 	; Use a DoOnce flag to speed script up after setStage
+	if player.getInCell DL9c08 == 1
+		setStage DL9MehrunesQuest 70
+		set DoOnceStage70 to 1
+		; *** Speed up script for better feedback.
+		Set fQuestDelayTime to 1
+	endif
+endif
+
+; *** Set new stage upon entering the Nefarivigum.
+if GetStage DL9MehrunesQuest == 70 && GetStageDone DL9MehrunesQuest 65 == 0
+	if Player.GetInCell DL9c09 == 1
+		SetStage DL9MehrunesQuest 65
+		; *** Restore normal speed.
+		Set fQuestDelayTime to 0
+	endif
+endif
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Morag Tong Assassin Block(s)
+;
+;	Check for cell door being unlocked, opens condition for assassination package
+if DL9MoragCellREF.getLocked == 0
+	set MoragTongCellStatus to 1
+endif
+
+;	If assassination is succesful (of commander already dead) flee to Abandoned Shack in IC waterfront
+if DL9BossCommanderREF.getDead == 1
+	set MoragTongKillStatus to 1
+endif
+
+end

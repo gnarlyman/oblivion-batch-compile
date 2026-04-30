@@ -1,0 +1,96 @@
+scriptname DLC06ThievesDenQuestScript
+
+short	SkeletonDeathCount
+short 	DunbarrowUpgradeCount
+short 	StolenGoldHold
+short 	StolenGoldHoldProduct
+short 	GiveLoot
+short	PiratesReady
+short	PiratesGo
+short	PiratesOut
+short 	LastPickup
+short 	doOnce
+
+float 	fQuestDelayTime
+
+BEGIN GameMode
+
+;UOMP optimized to nested IF's
+
+if ( getStage DLC06ThievesDen == 0 )
+	if  ( player.IsInCombat == 0 ) && (GetStage PSCharacterGen >= 80)
+		setstage DLC06ThievesDen 10
+		set DunbarrowUpgradeCount to 0
+		if ( GetStageDone TG00FindThievesGuild 30 == 1 )
+			setStage TG00FindThievesGuild 20 
+		endif
+	endif
+endif
+
+; UOMP changed range to 5000 as player could go into cave without triggering quest advancement
+; Also changed FQuestdelaytime to .5
+
+if ( getStage DLC06ThievesDen == 10 )
+	set fQuestDelayTime to .5
+	if ( Player.GetDistance DLCDunbarrowMapMarker <= 5000 )
+		SetStage DLC06ThievesDen 11
+		set fQuestDelayTime to 0
+	endif
+endif
+
+if ( getStage DLC06ThievesDen >= 11 ) && ( getstage DLC06ThievesDen < 100 )
+
+	if ( getStage DLC06ThievesDen >= 10 ) && ( getStage DLC06ThievesDen <= 11 )   && ( player.getInCell DLDunBarrowHaven == 1 )
+		setstage DLC06ThievesDen 15
+	endif
+
+	if ( GetStage DLC06ThievesDen == 15 ) && ( SkeletonDeathCount >= 7 )
+		setstage DLC06ThievesDen 18
+	endif
+
+;UOMP optimized so all 7 pirates aren't getting disabled every time and optimized cell check; no need to check separately as all start with "DLDunBarrowHaven"
+	if DLC06PirateCaptain.GetDisabled == 0
+		if ( GetStage DLC06ThievesDen >= 18 )
+			if ( player.getInCell DLDunBarrowHaven == 0 )
+				DLC06PirateSkeleton01.disable 
+				DLC06PirateSkeleton02.disable 
+				DLC06PirateSkeleton03.disable 
+				DLC06PirateSkeleton04.disable 
+				DLC06PirateSkeleton05.disable 
+				DLC06PirateSkeleton06.disable 
+				DLC06PirateCaptain.disable 
+			endif
+		endif
+	endif
+
+	if ( DunbarrowUpgradeCount >= 1 ) && ( DoOnce == 0 )
+		DLClutterParent.Enable
+		set DoOnce to 1
+	endif
+
+	if ( DunbarrowUpgradeCount >= 2 ) && ( DoOnce == 1 )
+		DLCPirate01Ref.enable
+		Message "Due to the prestige of your crew, the pirate Zedrick Green has joined."
+		set DoOnce to 2
+	endif
+
+	if ( DunbarrowUpgradeCount >= 4 )  && ( DoOnce == 2 )
+		DLCPirate02Ref.enable
+		Message "Due to the prestige of your crew, the pirate Scurvy John Hoff has joined."
+		set DoOnce to 3
+	endif
+
+	if ( DunbarrowUpgradeCount >= 6 )  && ( DoOnce == 3 )
+		DLCPirate03Ref.enable
+		Message "Due to the prestige of your crew, the pirate Yinz'r has joined."
+		setstage DLC06ThievesDen 100
+		Set DunbarrowUpgradeCount to 0
+		set DoOnce to 4
+	endif
+
+endif
+
+END
+;<CSEBlock>
+;<CSECaretPos> 389 </CSECaretPos>
+;</CSEBlock>

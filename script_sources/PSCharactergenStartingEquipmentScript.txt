@@ -970,7 +970,7 @@ begin Gamemode
 			Player.AddItemNS PotionRestoreFatigueW 1
 		endif
 
-		if (IsModLoaded "Oblivion DLC Delayers.esp" == 1 || IsModLoaded "Delay DLC Start.esp" == 1)
+		if (IsModLoaded "Delay DLC Start.esp" == 1)
 			;Just skip to the end if an alternate way of starting the DLC is installed.
 			set doOnce to 9
 		else

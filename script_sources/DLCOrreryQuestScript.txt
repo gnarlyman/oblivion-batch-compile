@@ -1,0 +1,77 @@
+Scriptname DLCOrreryQuestScript
+
+;This script handles all the variables and scripting for quest DLCOrrery
+
+short doonce
+
+;variables incremented when each piece is found (used for quest targets)
+
+short cog1				;incremented when player picks up DLCOrreryDwarvenCog1, used for quest target
+short cog2				;incremented when player picks up DLCOrreryDwarvenCog2, used for quest target
+short coherer			;incremented when player picks up DLCOrreryDwarvenCoherer, used for quest target
+short cylinder			;incremented when player picks up DLCOrreryDwarvenCylinder, used for quest target
+short tube				;incremented when player picks up DLCOrreryDwarvenTube, used for quest target
+
+short daycheck			;set when player turns in items, used to check passage of time for update to stage 100
+short activated			;set to 1 when console is activated
+
+short bothieltalk		;flag updated when Bothiel delivers her introductory line, so it isn't repeated later.
+
+Begin Gamemode
+
+;Add the note to the player's inventory and update journal when player is out of chargen sewer and not in combat
+;also enable Bandit Refs
+
+if ( GetStage DLCOrrery == 0 ) && ( Player.IsInCombat == 0 ) && (GetStage PSCharacterGen >= 80)
+
+	player.additem DLCOrreryNote 1
+	setstage DLCOrrery 10
+	DLCOrreryBandit1Ref1.Enable
+	DLCOrreryBandit1Ref1.PosWorld -146945.796 30078.8672 12828.7764 0 Tamriel
+	DLCOrreryBandit2Ref1.Enable
+	DLCOrreryBandit2Ref1.PosWorld -112172.601 44503.8438 12771.8730 0 Tamriel
+	DLCOrreryBandit3Ref1.Enable
+	DLCOrreryBandit3Ref1.PosWorld -116540.562 18500.7324 7787.8286 0 Tamriel
+	DLCOrreryBandit4Ref1.Enable
+	DLCOrreryBandit4Ref1.PosWorld -174006.125 6376.1973 6252.8516, 0, Tamriel
+	DLCOrreryBandit5Ref1.Enable	
+	DLCOrreryBandit5Ref1.PosWorld -182350.625 27022.1504 5340.9019 0 Tamriel
+
+endif
+
+;Update journal when player has the bandit's note in his inventory
+
+if ( GetStage DLCOrrery == 10 )
+	if ( player.GetItemCount DLCOrreryBanditNote >= 1 )
+		SetStage DLCOrrery 20
+	endif
+endif
+
+
+if ( GetStage DLCOrrery >= 10 ) && ( GetStage DLCOrrery < 30 )
+
+
+;Update journal when player has all of the artifacts in his inventory
+
+	if ( cog1 == 1 ) && ( cog2 == 1 )
+		if ( coherer == 1 ) && ( cylinder == 1 )
+			if ( tube == 1 )
+				SetStage DLCOrrery 30
+			endif
+		endif
+	endif
+
+endif
+
+;Once player has turned in the artifacts, check for passage of one day and update to stage 100
+
+if ( GetStage DLCOrrery == 40 )
+	if ( daycheck != GameDaysPassed )
+		SetStage DLCOrrery 100
+	endif
+endif
+
+End
+;<CSEBlock>
+;<CSECaretPos> 1227 </CSECaretPos>
+;</CSEBlock>

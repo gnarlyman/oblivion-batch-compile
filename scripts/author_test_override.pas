@@ -105,9 +105,13 @@ begin
 
   TargetPlugin := FindFileByName(TargetName);
   if not Assigned(TargetPlugin) then begin
-    AddMessage('ERROR: target plugin not found in load order: ' + TargetName);
-    Result := 2;
-    Exit;
+    AddMessage('Target plugin not in load order; creating new file: ' + TargetName);
+    TargetPlugin := AddNewFileName(TargetName);
+    if not Assigned(TargetPlugin) then begin
+      AddMessage('ERROR: AddNewFileName returned nil for: ' + TargetName);
+      Result := 2;
+      Exit;
+    end;
   end;
 
   MasterFid := ParseFormID(FormIDStr);
