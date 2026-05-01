@@ -52,6 +52,62 @@ void CollectTargets(cs::TESDataHandler* dh, bool hasFormId, std::uint32_t formId
     }
 }
 
+// Mark every plugin listed in the active profile's plugins.txt as loaded.
+//
+// Without this, the AutoLoad bypass below only carries the target plugin's
+// master tree into the load — non-master entries (e.g. UOP when the target
+// is Cobl Tweaks - OOO) get skipped, and any reference to a UOP-injected
+// FormID becomes unresolvable. CS's PKID resolver loops on those.
+//
+// Path: %LOCALAPPDATA%\Oblivion\plugins.txt. Under MO2 USVFS this redirects
+// to the active profile's plugins.txt automatically.
+//
+// Returns the number of plugins successfully marked loaded.
+int SetLoadedFromPluginsTxt(cs::TESDataHandler* dh) {
+    const char* localAppData = std::getenv("LOCALAPPDATA");
+    if (!localAppData || !*localAppData) {
+        OBC_LOG("PluginsTxt: LOCALAPPDATA not set; skipping plugins.txt load");
+        return 0;
+    }
+    std::string path = std::string(localAppData) + "\\Oblivion\\plugins.txt";
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, path.c_str(), "rb") != 0 || !f) {
+        OBC_LOG("PluginsTxt: cannot open '%s'", path.c_str());
+        return 0;
+    }
+
+    int loaded = 0;
+    int missed = 0;
+    char buf[1024];
+    while (std::fgets(buf, sizeof(buf), f)) {
+        // Trim leading whitespace + MO2/LOOT-style '*' active marker.
+        char* p = buf;
+        while (*p == ' ' || *p == '\t' || *p == '*') p++;
+        // Skip blanks and comment lines.
+        if (*p == '\0' || *p == '\r' || *p == '\n' || *p == '#') continue;
+        // Strip trailing whitespace + line endings.
+        std::size_t len = std::strlen(p);
+        while (len > 0 && (p[len-1] == '\r' || p[len-1] == '\n' ||
+                           p[len-1] == ' '  || p[len-1] == '\t')) {
+            p[--len] = '\0';
+        }
+        if (len == 0) continue;
+
+        cs::TESFile* file = cs::LookupPluginByName(dh, p);
+        if (file) {
+            cs::FileSetLoaded(file, true);
+            loaded++;
+        } else {
+            OBC_LOG("PluginsTxt: skip '%s' (not in data dir)", p);
+            missed++;
+        }
+    }
+    std::fclose(f);
+    OBC_LOG("PluginsTxt: SetLoaded on %d plugins (%d not found)", loaded, missed);
+    return loaded;
+}
+
 bool LoadTargetPlugin(const std::string& target, cs::TESFile*& outFile,
                       std::string& errorOut) {
     auto* dh = cs::DataHandler();
@@ -68,6 +124,12 @@ bool LoadTargetPlugin(const std::string& target, cs::TESFile*& outFile,
 
     cs::FileSetActive(file, true);
     cs::FileSetLoaded(file, true);
+
+    // Match the Data Files dialog's behavior by SetLoaded()-ing every plugin
+    // the user selected via plugins.txt. Otherwise the AutoLoad bypass only
+    // pulls in the target's master tree and any cross-plugin references to
+    // non-master plugins become unresolvable.
+    SetLoadedFromPluginsTxt(dh);
 
     HWND hwnd = cs::CSWindow();
     if (!hwnd) {
