@@ -184,13 +184,21 @@ void SaveAndClose(BatchResult& result) {
         return;
     }
 
-    OBC_LOG("Save: sending WM_COMMAND kToolbar_Save");
+    // CS's Save handler short-circuits when UnsavedChangesFlag is 0.
+    // Our in-memory ScriptCompile() rewrites SCDA bytes directly without
+    // going through the editor UI hooks that normally flip the flag, so
+    // CS sees nothing as "modified" and skips the write. Force the flag
+    // to 1 so Save actually persists our SCDA edits to disk.
+    auto* unsavedFlag = reinterpret_cast<std::uint8_t*>(cs::kAddr_TESCSMain_UnsavedChangesFlag);
+    *unsavedFlag = 1;
+    OBC_LOG("Save: forced UnsavedChangesFlag=1; sending WM_COMMAND kToolbar_Save");
     SendMessageA(hwnd, WM_COMMAND, cs::kToolbar_Save, 0);
     result.saved = true;
     OBC_LOG("Save: returned");
 
-    // Suppress the "Save changes before exiting?" prompt.
-    *reinterpret_cast<std::uint8_t*>(cs::kAddr_TESCSMain_UnsavedChangesFlag) = 0;
+    // Suppress the "Save changes before exiting?" prompt — CS's Save handler
+    // clears the flag itself on a successful write, but belt-and-braces here.
+    *unsavedFlag = 0;
     OBC_LOG("Exit: posting WM_CLOSE");
     PostMessageA(hwnd, WM_CLOSE, 0, 0);
 }
